@@ -1,2 +1,5 @@
 ---
 gitops_operator_version: 1.14.1
+
+# path to optional repo config file (kubernetes secret)
+gitops_repo_config_file: "{{ playbook_dir }}/group_vars/all/gitops-repo-creds.yml"
