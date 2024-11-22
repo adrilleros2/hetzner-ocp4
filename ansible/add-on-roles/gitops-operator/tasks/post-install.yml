@@ -20,7 +20,6 @@
         name: openshift-gitops-operator
         source: redhat-operators
         sourceNamespace: openshift-marketplace
-        startingCSV: openshift-gitops-operator.v{{ gitops_operator_version }}
 
 - name: Configure GitOps Repository
   delegate_to: localhost
