@@ -74,6 +74,10 @@ cluster_role_bindings:
   - cluster_role: cluster-admin
     name: admin
 
+cluster_groups:
+  - name: cluster-admins
+    users:
+      - admin
 
 image_pull_secret: |-
   asdfghfdsa

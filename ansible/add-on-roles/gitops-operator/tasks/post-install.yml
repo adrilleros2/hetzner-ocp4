@@ -1,0 +1,34 @@
+---
+- name: Install GitOps Operator
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    host: "{{ k8s_host }}"
+    ca_cert: "{{ k8s_ca_cert }}"
+    client_cert: "{{ k8s_client_cert }}"
+    client_key: "{{ k8s_client_key }}"
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: openshift-gitops-operator
+        namespace: openshift-operators
+      spec:
+        channel: latest
+        installPlanApproval: Automatic
+        name: openshift-gitops-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+
+- name: Configure GitOps Repository
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    host: "{{ k8s_host }}"
+    ca_cert: "{{ k8s_ca_cert }}"
+    client_cert: "{{ k8s_client_cert }}"
+    client_key: "{{ k8s_client_key }}"
+    definition: "{{ lookup('file', gitops_repo_config_file) | from_yaml }}"
+  when: gitops_repo_config_file is file
