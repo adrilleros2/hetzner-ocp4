@@ -1,3 +1,35 @@
+# TOC
+
+- [TOC](#toc)
+- [Disclaimer](#disclaimer)
+- [Release notes](#release-notes)
+- [Contribution](#contribution)
+- [Install Instructions](#install-instructions)
+  - [Infra providers](#infra-providers)
+  - [Strongly recommended: configure Hetzner Firewall](#strongly-recommended-configure-hetzner-firewall)
+  - [In case of Red Hat Enterprise Linux](#in-case-of-red-hat-enterprise-linux)
+    - [Red Hat Enterprise Linux 8](#red-hat-enterprise-linux-8)
+    - [Red Hat Enterprise Linux 9](#red-hat-enterprise-linux-9)
+  - [In case of Rocky Linux 8 or Centos 8](#in-case-of-rocky-linux-8-or-centos-8)
+  - [Initialize tools](#initialize-tools)
+  - [Define variables for your cluster](#define-variables-for-your-cluster)
+    - [Cluster design (single node, compact or normal)](#cluster-design-single-node-compact-or-normal)
+      - [Single Node](#single-node)
+      - [Compact](#compact)
+      - [Normal](#normal)
+    - [Pre-releases](#pre-releases)
+    - [Set up public DNS records](#set-up-public-dns-records)
+    - [Optional configuration](#optional-configuration)
+  - [Prepare kvm-host and install OpenShift](#prepare-kvm-host-and-install-openshift)
+- [Additional documentation](#additional-documentation)
+- [Playbook overview](#playbook-overview)
+- [Useful commands](#useful-commands)
+- [Build / Development](#build--development)
+  - [Build ansible execution enviorment](#build-ansible-execution-enviorment)
+- [Stargazers over time](#stargazers-over-time)
+- [Troubleshooting](#troubleshooting)
+  - [ansible can not connect to host](#ansible-can-not-connect-to-host)
+
 # Disclaimer
 This environment has been created for the sole purpose of providing an easy to deploy and consume Red Hat OpenShift Container Platform 4 environment *as a sandpit*.
 
@@ -290,6 +322,9 @@ In our setup, this will be `ansible/group_vars` and `ansible/host_vars`.
 ## Build ansible execution enviorment
 
 ```bash
+python -m venv ansible-builder
+source ./ansible-builder/bin/activate
+pip install ansible-builder>=3.1.0
 
 VERSION=$(date +%Y%m%d%H%M)
 
@@ -305,3 +340,24 @@ podman push quay.io/redhat-emea-ssa-team/hetzner-ocp4-ansible-ee:$VERSION
 
 [![Stargazers over time](https://starchart.cc/RedHat-EMEA-SSA-Team/hetzner-ocp4.svg)](https://starchart.cc/RedHat-EMEA-SSA-Team/hetzner-ocp4)
 
+# Troubleshooting
+
+## ansible can not connect to host
+
+If you get a message like
+
+```
+fatal: [host]: UNREACHABLE! => {
+    "changed": false,
+    "msg": "Data could not be sent to remote host \"localhost\". Make sure this host can be reached over ssh: root@localhost: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).\r\n",
+    "unreachable": true
+}
+```
+
+you can put an additional entry into the ```cluster.yml``` like
+
+```
+ansible_ssh_private_key_file: /root/.ssh/id_ed25519
+```
+
+Don't know if this is the most elegant solution, but at least it worked for me :-)
